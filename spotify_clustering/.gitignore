@@ -1,0 +1,47 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+*.cache
+
+# Virtual environment directory
+venv/
+env/
+.venv/
+.env/
+
+# Django migrations
+*/migrations/
+
+*.sqlite3
+
+secret_key.txt
+
+*.log
+
+# Django static and media files
+/static/
+/media/
+
+# VS Code settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Test files
+*.coverage
+*.tox
+*.nox
+*.coverage.*
+nosetests.xml
+coverage.xml
+*.hypothesis/
+
+# Local environment files
+*.env
+
+config.json

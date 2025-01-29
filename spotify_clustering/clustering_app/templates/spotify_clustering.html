@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clustering</title>
+</head>
+<body>
+    <h1>Spotify Artist Clustering</h1>
+    <form method="POST" action="{% url 'spotify_clustering' %}">
+        {% csrf_token %}
+        <label for="playlist_id">Playlist ID:</label>
+        <input type="text" id="playlist_id" name="playlist_id" placeholder="Enter Playlist ID">
+        <button type="submit">Analyze</button>
+    </form>
+
+    <form method="post" action="{% url 'upload_csv' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="csv_file">Upload CSV File:</label>
+        <input type="file" name="csv_file" id="csv_file" accept=".csv" required>
+        <button type="submit">Upload and Analyze</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">Error: {{ error }}</p>
+    {% endif %}
+
+    {% if bar_plot %}
+        <h2>Exploratory Data Analysis</h2>
+        <h3>Top 10 Artists by Number of Songs</h3>
+        <img src="data:image/png;base64,{{ bar_plot }}" alt="Bar Plot">
+        
+        <h3>Number of Songs vs Average Popularity</h3>
+        <img src="data:image/png;base64,{{ scatter_plot }}" alt="Scatter Plot">
+
+        <h3>Elbow Method</h3>
+        <img src="data:image/png;base64,{{ elbow_plot }}" alt="Elbow Plot">
+
+        <h3>Artist Clusters</h3>
+        <img src="data:image/png;base64,{{ cluster_plot }}" alt="Cluster Plot">
+    {% endif %}
+
+    {% if artist_stats %}
+        <h2>Artist Stats</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Artist</th>
+                    <th>Number of Songs</th>
+                    <th>Average Popularity</th>
+                    <th>Cluster</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artist in artist_stats %}
+                    <tr>
+                        <td>{{ artist.artist_name }}</td>
+                        <td>{{ artist.num_songs }}</td>
+                        <td>{{ artist.avg_popularity }}</td>
+                        <td>{{ artist.cluster }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h1>MusicBrainz Web Scraper</h1>
+    <form method="post" action="{% url 'web_scraping' %}">
+        {% csrf_token %}
+        <label for="artist_code">Enter Artist Code:</label>
+        <input type="text" name="artist_code" id="artist_code" placeholder="Artist Code (e.g., d262ea27-3ffe-40f7-b922-85c42d625e67)" required>
+        <button type="submit">Scrape Music Titles</button>
+    </form>
+
+    {% if error_scraping %}
+        <p class="error">Error: {{ error_scraping }}</p>
+    {% endif %}
+
+    {% if scraped_data %}
+        <h2>Scraped Music Titles</h2>
+        {{ scraped_data | safe }}
+    {% endif %}
+    
+</body>
+</html>
